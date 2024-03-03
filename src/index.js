@@ -7,11 +7,13 @@ app.use(express.json());
 
 //--------------------------------------CREATE DB--------------------------------------------
 
-const sequelize = new Sequelize('database','username','password',{
-    host: 'localhost',
-    dialect: 'sqlite',
-    storage: './Database/bookstadium.sqlite'
-});
+const db_url = "postgres://webadmin:ONLobm41837@node59653-env-8965744.proen.app.ruk-com.cloud:11938/bookstadium"
+const sequelize = new Sequelize(db_url);
+// const sequelize = new Sequelize('database','username','password',{
+//     host: 'localhost',
+//     dialect: 'sqlite',
+//     storage: './Database/bookstadium.sqlite'
+// });
 //--------------------------------------CREATE TABLE------------------------------------------
 
 // CREATE TABLE `sales_data`
@@ -48,7 +50,7 @@ const Sales = sequelize.define('sales_data',{
 });
 
  //CREATE TABLE `stadium`
-const Stadium = sequelize.define('stadium',{
+const Stadium = sequelize.define('stadiums',{
     StadiumID: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -81,7 +83,7 @@ const Stadium = sequelize.define('stadium',{
 });
 
 //CREATE TABLE `typestadium`
-const Type = sequelize.define('type_stadium',{
+const Type = sequelize.define('type_stadiums',{
     TypeID:{
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -126,10 +128,6 @@ const User = sequelize.define('user',{
       },
       Address: {
         type: Sequelize.STRING(100),
-        allowNull: false
-      },
-      FirstDate: {
-        type: Sequelize.DATE,
         allowNull: false
       }
 });
@@ -244,7 +242,7 @@ app.get("/stadiums/:StadiumID",(req,res)=>{
 });
 
 app.get("/users/:UserID",(req,res)=>{
-  User.findByPk(req.params.id)
+  User.findByPk(req.params.UserID)
   .then((user)=>{
     if (!user) {
       res.send(404).json("user not found!");
@@ -258,7 +256,7 @@ app.get("/users/:UserID",(req,res)=>{
 });
 
 app.get("/sales_datas/:SalesID",(req,res)=>{
-  Sales.findByPk(req.params.id)
+  Sales.findByPk(req.params.SalesID)
   .then((sales_data)=>{
     if (!sales_data) {
       res.send(404).json("Sale not found!");
@@ -324,6 +322,128 @@ app.put("/type_stadiums/:TypeID",(req,res)=>{
         type_stadium.update(req.body).then((type_stadium)=>{
           res.status(200).json(type_stadium);
         })
+    }
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.put("/stadiums/:StadiumID",(req,res)=>{
+  Stadium.findByPk(req.params.StadiumID)
+  .then((stadium)=>{
+    if (!stadium) {
+        res.send(404).json("Type not found!");
+    } else {
+        stadium.update(req.body).then((stadium)=>{
+          res.status(200).json(stadium);
+        })
+    }
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.put("/users/:UserID",(req,res)=>{
+  User.findByPk(req.params.UserID)
+  .then((user)=>{
+    if (!user) {
+        res.send(404).json("Type not found!");
+    } else {
+        user.update(req.body).then((user)=>{
+          res.status(200).json(user);
+        })
+    }
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.put("/sales_datas/:SalesID",(req,res)=>{
+  Sales.findByPk(req.params.SalesID)
+  .then((sales_data)=>{
+    if (!sales_data) {
+        res.send(404).json("Type not found!");
+    } else {
+        sales_data.update(req.body).then((sales_data)=>{
+          res.status(200).json(sales_data);
+        })
+    }
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+//---------------------------------delete--------------------------------------------------
+
+app.delete("/type_stadiums/:TypeID",(req,res)=>{
+  Type.findByPk(req.params.TypeID)
+  .then((type_stadium)=>{
+    if (!type_stadium) {
+        res.send(404).json("Type not found!");
+    } else {
+      type_stadium.destroy().then(()=>{
+        res.send({});
+      }).catch(err=>{
+        res.status(500).send(err);
+      })
+    }
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.delete("/stadiums/:StadiumID",(req,res)=>{
+  Stadium.findByPk(req.params.StadiumID)
+  .then((stadium)=>{
+    if (!stadium) {
+        res.send(404).json("stadium not found!");
+    } else {
+      stadium.destroy().then(()=>{
+        res.send({});
+      }).catch(err=>{
+        res.status(500).send(err);
+      })
+    }
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.delete("users/:UserID",(req,res)=>{
+  User.findByPk(req.params.UserID)
+  .then((User)=>{
+    if (!User) {
+        res.send(404).json("User not found!");
+    } else {
+      User.destroy().then(()=>{
+        res.send({});
+      }).catch(err=>{
+        res.status(500).send(err);
+      })
+    }
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.delete("/sales_datas/:SalesID",(req,res)=>{
+  Sales.findByPk(req.params.SalesID)
+  .then((sales_data)=>{
+    if (!sales_data) {
+        res.send(404).json("sales_data not found!");
+    } else {
+      sales_data.destroy().then(()=>{
+        res.send({});
+      }).catch(err=>{
+        res.status(500).send(err);
+      })
     }
   })
   .catch((err)=>{
