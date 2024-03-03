@@ -210,22 +210,125 @@ app.get("/sales_datas",(req,res)=>{
     .catch((err)=>{
         res.status(500).send(err);
     })
-})
+});
 
 //---------------------------------Get-----------------------------------------------------
 
 app.get("/type_stadiums/:TypeID",(req,res)=>{
-    Type.findByPk(req.params.id)
-    .then((type_stadium)=>{
-        if (!type_stadium) {
-            res.send(404).json("Type not found!");
-        } else {
-            res.status(200).json(type_stadium);
-        }
-    })
-    .catch((err)=>{
-        res.status(500).send(err);
-    })
+  Type.findByPk(req.params.TypeID)
+  .then((type_stadium)=>{
+      if (!type_stadium) {
+          res.status(404).json("Type not found!");
+      } else {
+          res.status(200).json(type_stadium);
+      }
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+
+app.get("/stadiums/:StadiumID",(req,res)=>{
+  Stadium.findByPk(req.params.StadiumID)
+  .then((stadium)=>{
+    if (!stadium) {
+      res.send(404).json("stadium not found!");
+    } else {
+      res.status(200).json(stadium);
+    }
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+app.get("/users/:UserID",(req,res)=>{
+  User.findByPk(req.params.id)
+  .then((user)=>{
+    if (!user) {
+      res.send(404).json("user not found!");
+    } else {
+      res.status(200).json(user);
+    }
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+app.get("/sales_datas/:SalesID",(req,res)=>{
+  Sales.findByPk(req.params.id)
+  .then((sales_data)=>{
+    if (!sales_data) {
+      res.send(404).json("Sale not found!");
+    } else {
+      res.status(200).json(sales_data);
+    }
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+//---------------------------------Post-----------------------------------------------------
+
+app.post("/type_stadiums",(req,res)=>{
+  Type.create(req.body)
+  .then((type_stadium)=>{
+    res.status(200).json(type_stadium)
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.post("/stadiums",(req,res)=>{
+  Stadium.create(req.body)
+  .then((stadium)=>{
+    res.status(200).json(stadium)
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.post("/users",(req,res)=>{
+  User.create(req.body)
+  .then((use)=>{
+    res.status(200).json(use)
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.post("/sales_datas",(req,res)=>{
+  Sales.create(req.body)
+  .then((sales_data)=>{
+    res.status(200).json(sales_data)
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+//---------------------------------Put-----------------------------------------------------
+
+app.put("/type_stadiums/:TypeID",(req,res)=>{
+  Type.findByPk(req.params.TypeID)
+  .then((type_stadium)=>{
+    if (!type_stadium) {
+        res.send(404).json("Type not found!");
+    } else {
+        type_stadium.update(req.body).then((type_stadium)=>{
+          res.status(200).json(type_stadium);
+        })
+    }
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
 });
 
 //-------------------------------------------------------------------------------------------
