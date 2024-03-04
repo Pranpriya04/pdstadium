@@ -7,13 +7,13 @@ app.use(express.json());
 
 //--------------------------------------CREATE DB--------------------------------------------
 
-const db_url = "postgres://webadmin:ONLobm41837@node59653-env-8965744.proen.app.ruk-com.cloud:11938/bookstadium"
-const sequelize = new Sequelize(db_url);
-// const sequelize = new Sequelize('database','username','password',{
-//     host: 'localhost',
-//     dialect: 'sqlite',
-//     storage: './Database/bookstadium.sqlite'
-// });
+// const db_url = "postgres://webadmin:ONLobm41837@node59653-env-8965744.proen.app.ruk-com.cloud:11938/bookstadium"
+// const sequelize = new Sequelize(db_url);
+const sequelize = new Sequelize('database','username','password',{
+    host: 'localhost',
+    dialect: 'sqlite',
+    storage: './Database/bookstadium.sqlite'
+});
 //--------------------------------------CREATE TABLE------------------------------------------
 
 // CREATE TABLE `sales_data`
