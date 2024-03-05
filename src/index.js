@@ -35,11 +35,7 @@ const Sales = sequelize.define('sales_data',{
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      EnterTime: {
-        type: Sequelize.TIME,
-        allowNull: false
-      },
-      OutTime: {
+      Time: {
         type: Sequelize.TIME,
         allowNull: false
       },
@@ -61,14 +57,6 @@ const Stadium = sequelize.define('stadiums',{
         allowNull: false
       },
       TypeID: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      OpenTime: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-      },
-      CloseTime: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
