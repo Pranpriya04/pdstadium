@@ -174,20 +174,6 @@ app.get("/stadiums", (req, res) => {
     });
 });
 
-app.get("/stadiums/:StadiumID", (req, res) => {
-  Stadium.findOne({
-    include: Type,
-    where: {
-      StadiumID: req.params.StadiumID,
-    },
-  })
-    .then((stadiums) => {
-      res.status(200).json(stadiums);
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
 app.get("/users", (req, res) => {
   User.findAll({
     include: UserID,
@@ -270,25 +256,14 @@ app.get("/users", (req, res) => {
     });
 });
 
-app.get("/history/:UserID", (req, res) => {
+app.get("/sales_datas", (req, res) => {
   Sales.findAll({
-    include: [
-      {
-        model: Stadium,
-        include: [
-          {
-            model: Type,
-            attributes: ["TypeName"],
-          },
-        ],
-      },
-    ],
-    where: {
-      UserID: req.params.UserID,
-    },
+    include: Type,
+    include: Stadium,
+    include: User,
   })
-    .then((stadiums) => {
-      res.status(200).json(stadiums);
+    .then((sales_datas) => {
+      res.status(200).json(sales_datas);
     })
     .catch((err) => {
       res.status(500).send(err);
@@ -437,8 +412,7 @@ app.post("/forget", (req, res) => {
     });
 });
 
-app.post("/sales_data", (req, res) => {
-  console.log(req.body);
+app.post("/sales_datas", (req, res) => {
   Sales.create(req.body)
     .then((sales_data) => {
       res.status(200).json(sales_data);
@@ -482,8 +456,8 @@ app.put("/stadiums/:StadiumID", (req, res) => {
     });
 });
 
-app.put("/users", (req, res) => {
-  User.findByPk(req.body.UserID)
+app.put("/users/:UserID", (req, res) => {
+  User.findByPk(req.params.UserID)
     .then((user) => {
       if (!user) {
         res.send(404).json("Type not found!");
@@ -514,6 +488,21 @@ app.put("/sales_datas/:SalesID", (req, res) => {
     });
 });
 
+app.put("/editprofile/:userID", (req, res) => {
+  User.findByPk(req.params.userID)
+    .then((user) => {
+      if (!user) {
+        res.send(404).json("user not found!");
+      } else {
+        user.update(req.body).then((user) => {
+          res.status(200).json(user);
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
 //---------------------------------delete--------------------------------------------------
 
 app.delete("/type_stadiums/:TypeID", (req, res) => {
@@ -605,3 +594,4 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Listening on ${port}`);
 });
+
