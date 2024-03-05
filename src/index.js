@@ -2,9 +2,9 @@ require("dotenv").config();
 const express = require('express');
 const Sequelize = require('sequelize');
 const app = express();
-
+var cors = require('cors')
 app.use(express.json());
-
+app.use(cors())
 //--------------------------------------CREATE DB--------------------------------------------
 
 // const db_url = "postgres://webadmin:ONLobm41837@node59653-env-8965744.proen.app.ruk-com.cloud:11938/bookstadium"
@@ -175,6 +175,78 @@ app.get("/stadiums",(req,res)=>{
 });
 
 app.get("/users",(req,res)=>{
+  User.findAll({
+      include: UserID
+  })
+  .then((users)=>{
+      res.status(200).json(users);
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+app.get("/basketball",(req,res)=>{
+  Stadium.findAll({
+      include: Type,
+      where:{
+        TypeID:1
+      }
+  })
+  .then((basketball)=>{
+      res.status(200).json(basketball);
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+app.get("/football",(req,res)=>{
+  Stadium.findAll({
+      include: Type,
+      where:{
+        TypeID:2
+      }
+  })
+  .then((football)=>{
+      res.status(200).json(football);
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+app.get("/futsal",(req,res)=>{
+  Stadium.findAll({
+      include: Type,
+      where:{
+        TypeID:3
+      }
+  })
+  .then((futsal)=>{
+      res.status(200).json(futsal);
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+app.get("/Bat",(req,res)=>{
+  Stadium.findAll({
+      include: Type,
+      where:{
+        TypeID:4
+      }
+  })
+  .then((Bat)=>{
+      res.status(200).json(Bat);
+  })
+  .catch((err)=>{
+      res.status(500).send(err);
+  })
+});
+
+app.get("/users",(req,res)=>{
     User.findAll()
     .then((users)=>{
         res.status(200).json(users);
@@ -289,6 +361,58 @@ app.post("/users",(req,res)=>{
   })
 });
 
+app.post("/login",(req,res)=>{
+  User.findOne({
+    where:{
+      UserName:req.body.username,
+      UserPassword:req.body.password
+    }
+  })
+  .then((user)=>{
+    let status = false; 
+    let role = 0;
+    if(user){
+      status=true
+      if (user.UserName == "admin") {
+        role=1;
+      }
+      res.status(200).json({
+        status,role,user
+      });
+    }else{
+      res.status(200).json({
+        status,role
+      })
+    }
+    console.log(user);
+    // res.status(200).send("HI")
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
+app.post("/forget",(req,res)=>{
+  User.findOne({
+    where:{
+      UserName:req.body.username,
+      Email:req.body.Email
+    }
+  })
+  .then((user)=>{
+    if(user){
+      res.status(200).send(true);
+    }else{
+      res.status(200).send(false)
+    }
+    console.log(user);
+    // res.status(200).send("HI")
+  })
+  .catch((err)=>{
+    res.status(500).send(err);
+  })
+});
+
 app.post("/sales_datas",(req,res)=>{
   Sales.create(req.body)
   .then((sales_data)=>{
@@ -298,6 +422,7 @@ app.post("/sales_datas",(req,res)=>{
     res.status(500).send(err);
   })
 });
+
 
 //---------------------------------Put-----------------------------------------------------
 
