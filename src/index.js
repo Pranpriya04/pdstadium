@@ -150,7 +150,7 @@ Sales.belongsTo(Stadium, {
 
 sequelize.sync();
 
-//---------------------------------Get All-----------------------------------------------------
+//---------------------------------type_stadiums-----------------------------------------------------
 
 app.get("/type_stadiums", (req, res) => {
   Type.findAll()
@@ -161,6 +161,69 @@ app.get("/type_stadiums", (req, res) => {
       res.status(500).send(err);
     });
 });
+
+app.get("/type_stadiums/:TypeID", (req, res) => {
+  Type.findByPk(req.params.TypeID)
+    .then((type_stadium) => {
+      if (!type_stadium) {
+        res.status(404).json("Type not found!");
+      } else {
+        res.status(200).json(type_stadium);
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.post("/type_stadiums", (req, res) => {
+  Type.create(req.body)
+    .then((type_stadium) => {
+      res.status(200).json(type_stadium);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.put("/type_stadiums/:TypeID", (req, res) => {
+  Type.findByPk(req.params.TypeID)
+    .then((type_stadium) => {
+      if (!type_stadium) {
+        res.send(404).json("Type not found!");
+      } else {
+        type_stadium.update(req.body).then((type_stadium) => {
+          res.status(200).json(type_stadium);
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.delete("/type_stadiums/:TypeID", (req, res) => {
+  Type.findByPk(req.params.TypeID)
+    .then((type_stadium) => {
+      if (!type_stadium) {
+        res.send(404).json("Type not found!");
+      } else {
+        type_stadium
+          .destroy()
+          .then(() => {
+            res.send({});
+          })
+          .catch((err) => {
+            res.status(500).send(err);
+          });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+//---------------------------------stadiums-----------------------------------------------------
 
 app.get("/stadiums", (req, res) => {
   Stadium.findAll({
@@ -183,6 +246,67 @@ app.get("/stadiums/:StadiumID", (req, res) => {
   })
     .then((stadiums) => {
       res.status(200).json(stadiums);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.get("/stadiums/:StadiumID", (req, res) => {
+  Stadium.findByPk(req.params.StadiumID)
+    .then((stadium) => {
+      if (!stadium) {
+        res.send(404).json("stadium not found!");
+      } else {
+        res.status(200).json(stadium);
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.post("/stadiums", (req, res) => {
+  Stadium.create(req.body)
+    .then((stadium) => {
+      res.status(200).json(stadium);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.put("/stadiums/:StadiumID", (req, res) => {
+  Stadium.findByPk(req.params.StadiumID)
+    .then((stadium) => {
+      if (!stadium) {
+        res.send(404).json("Type not found!");
+      } else {
+        stadium.update(req.body).then((stadium) => {
+          res.status(200).json(stadium);
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.delete("/stadiums/:StadiumID", (req, res) => {
+  Stadium.findByPk(req.params.StadiumID)
+    .then((stadium) => {
+      if (!stadium) {
+        res.send(404).json("stadium not found!");
+      } else {
+        stadium
+          .destroy()
+          .then(() => {
+            res.send(true);
+          })
+          .catch((err) => {
+            res.status(500).send(err);
+          });
+      }
     })
     .catch((err) => {
       res.status(500).send(err);
@@ -249,84 +373,8 @@ app.get("/Bat", (req, res) => {
     });
 });
 
-app.get("/users", (req, res) => {
-  User.findAll()
-    .then((users) => {
-      res.status(200).json(users);
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
 
-app.get("/history/:UserID", (req, res) => {
-  Sales.findAll({
-    include: [
-      {
-        model: Stadium,
-        include: [
-          {
-            model: Type,
-            attributes: ["TypeName"],
-          },
-        ],
-      },
-    ],
-    where: {
-      UserID: req.params.UserID,
-    },
-  })
-    .then((stadiums) => {
-      res.status(200).json(stadiums);
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
-//---------------------------------Get-----------------------------------------------------
-
-app.get("/type_stadiums/:TypeID", (req, res) => {
-  Type.findByPk(req.params.TypeID)
-    .then((type_stadium) => {
-      if (!type_stadium) {
-        res.status(404).json("Type not found!");
-      } else {
-        res.status(200).json(type_stadium);
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
-app.get("/stadiums/:StadiumID", (req, res) => {
-  Stadium.findByPk(req.params.StadiumID)
-    .then((stadium) => {
-      if (!stadium) {
-        res.send(404).json("stadium not found!");
-      } else {
-        res.status(200).json(stadium);
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
-app.get("/users/:UserID", (req, res) => {
-  User.findByPk(req.params.UserID)
-    .then((user) => {
-      if (!user) {
-        res.send(404).json("user not found!");
-      } else {
-        res.status(200).json(user);
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
+//---------------------------------sales_data-----------------------------------------------------
 
 app.get("/sales_datas/:SalesID", (req, res) => {
   Sales.findByPk(req.params.SalesID)
@@ -368,24 +416,99 @@ app.get("/sales_data", (req, res) => {
     });
 });
 
-//---------------------------------Post-----------------------------------------------------
-
-
-
-app.post("/type_stadiums", (req, res) => {
-  Type.create(req.body)
-    .then((type_stadium) => {
-      res.status(200).json(type_stadium);
+app.post("/sales_data", (req, res) => {
+  console.log(req.body);
+  Sales.create(req.body)
+    .then((sales_data) => {
+      res.status(200).json(sales_data);
     })
     .catch((err) => {
       res.status(500).send(err);
     });
 });
 
-app.post("/stadiums", (req, res) => {
-  Stadium.create(req.body)
-    .then((stadium) => {
-      res.status(200).json(stadium);
+app.put("/sales_datas/:SalesID", (req, res) => {
+  Sales.findByPk(req.params.SalesID)
+    .then((sales_data) => {
+      if (!sales_data) {
+        res.send(404).json("Type not found!");
+      } else {
+        sales_data.update(req.body).then((sales_data) => {
+          res.status(200).json(sales_data);
+        });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.delete("/sales_datas/:SalesID", (req, res) => {
+  Sales.findByPk(req.params.SalesID)
+    .then((sales_data) => {
+      if (!sales_data) {
+        res.send(404).json("sales_data not found!");
+      } else {
+        sales_data
+          .destroy()
+          .then(() => {
+            res.send({});
+          })
+          .catch((err) => {
+            res.status(500).send(err);
+          });
+      }
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+//---------------------------------User -----------------------------------------------------
+
+app.get("/users", (req, res) => {
+  User.findAll()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.get("/history/:UserID", (req, res) => {
+  Sales.findAll({
+    include: [
+      {
+        model: Stadium,
+        include: [
+          {
+            model: Type,
+            attributes: ["TypeName"],
+          },
+        ],
+      },
+    ],
+    where: {
+      UserID: req.params.UserID,
+    },
+  })
+    .then((stadiums) => {
+      res.status(200).json(stadiums);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
+app.get("/users/:UserID", (req, res) => {
+  User.findByPk(req.params.UserID)
+    .then((user) => {
+      if (!user) {
+        res.send(404).json("user not found!");
+      } else {
+        res.status(200).json(user);
+      }
     })
     .catch((err) => {
       res.status(500).send(err);
@@ -478,51 +601,6 @@ app.post("/forget", (req, res) => {
     });
 });
 
-app.post("/sales_data", (req, res) => {
-  console.log(req.body);
-  Sales.create(req.body)
-    .then((sales_data) => {
-      res.status(200).json(sales_data);
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
-//---------------------------------Put-----------------------------------------------------
-
-app.put("/type_stadiums/:TypeID", (req, res) => {
-  Type.findByPk(req.params.TypeID)
-    .then((type_stadium) => {
-      if (!type_stadium) {
-        res.send(404).json("Type not found!");
-      } else {
-        type_stadium.update(req.body).then((type_stadium) => {
-          res.status(200).json(type_stadium);
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
-app.put("/stadiums/:StadiumID", (req, res) => {
-  Stadium.findByPk(req.params.StadiumID)
-    .then((stadium) => {
-      if (!stadium) {
-        res.send(404).json("Type not found!");
-      } else {
-        stadium.update(req.body).then((stadium) => {
-          res.status(200).json(stadium);
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
 app.put("/users", (req, res) => {
   User.findByPk(req.body.UserID)
     .then((user) => {
@@ -539,66 +617,6 @@ app.put("/users", (req, res) => {
     });
 });
 
-app.put("/sales_datas/:SalesID", (req, res) => {
-  Sales.findByPk(req.params.SalesID)
-    .then((sales_data) => {
-      if (!sales_data) {
-        res.send(404).json("Type not found!");
-      } else {
-        sales_data.update(req.body).then((sales_data) => {
-          res.status(200).json(sales_data);
-        });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
-//---------------------------------delete--------------------------------------------------
-
-app.delete("/type_stadiums/:TypeID", (req, res) => {
-  Type.findByPk(req.params.TypeID)
-    .then((type_stadium) => {
-      if (!type_stadium) {
-        res.send(404).json("Type not found!");
-      } else {
-        type_stadium
-          .destroy()
-          .then(() => {
-            res.send({});
-          })
-          .catch((err) => {
-            res.status(500).send(err);
-          });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
-app.delete("/stadiums/:StadiumID", (req, res) => {
-  Stadium.findByPk(req.params.StadiumID)
-    .then((stadium) => {
-      if (!stadium) {
-        res.send(404).json("stadium not found!");
-      } else {
-        stadium
-          .destroy()
-          .then(() => {
-            res.send(true);
-          })
-          .catch((err) => {
-            res.status(500).send(err);
-          });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
 app.delete("users/:UserID", (req, res) => {
   User.findByPk(req.params.UserID)
     .then((User) => {
@@ -606,27 +624,6 @@ app.delete("users/:UserID", (req, res) => {
         res.send(404).json("User not found!");
       } else {
         User.destroy()
-          .then(() => {
-            res.send({});
-          })
-          .catch((err) => {
-            res.status(500).send(err);
-          });
-      }
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
-
-app.delete("/sales_datas/:SalesID", (req, res) => {
-  Sales.findByPk(req.params.SalesID)
-    .then((sales_data) => {
-      if (!sales_data) {
-        res.send(404).json("sales_data not found!");
-      } else {
-        sales_data
-          .destroy()
           .then(() => {
             res.send({});
           })
