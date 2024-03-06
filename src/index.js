@@ -188,17 +188,6 @@ app.get("/stadiums/:StadiumID", (req, res) => {
       res.status(500).send(err);
     });
 });
-app.get("/users", (req, res) => {
-  User.findAll({
-    include: UserID,
-  })
-    .then((users) => {
-      res.status(200).json(users);
-    })
-    .catch((err) => {
-      res.status(500).send(err);
-    });
-});
 
 app.get("/basketball", (req, res) => {
   Stadium.findAll({
@@ -353,6 +342,32 @@ app.get("/sales_datas/:SalesID", (req, res) => {
     });
 });
 
+app.get("/sales_data", (req, res) => {
+  Sales.findAll({
+    include: [
+      {
+        model: Stadium,
+        include: [
+          {
+            model: Type,
+            attributes: ["TypeName"],
+          },
+        ],
+      },
+      {
+        model: User,
+        attributes: ["UserName"],
+      },
+    ],
+  })
+    .then((sales_data) => {
+      res.status(200).json(sales_data);
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
 //---------------------------------Post-----------------------------------------------------
 
 
@@ -379,8 +394,8 @@ app.post("/stadiums", (req, res) => {
 
 app.post("/users", (req, res) => {
   User.create(req.body)
-    .then((use) => {
-      res.status(200).json(use);
+    .then((user) => {
+      res.status(200).json(user);
     })
     .catch((err) => {
       res.status(500).send(err);
@@ -572,7 +587,7 @@ app.delete("/stadiums/:StadiumID", (req, res) => {
         stadium
           .destroy()
           .then(() => {
-            res.send({});
+            res.send(true);
           })
           .catch((err) => {
             res.status(500).send(err);
