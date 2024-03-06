@@ -355,6 +355,8 @@ app.get("/sales_datas/:SalesID", (req, res) => {
 
 //---------------------------------Post-----------------------------------------------------
 
+
+
 app.post("/type_stadiums", (req, res) => {
   Type.create(req.body)
     .then((type_stadium) => {
@@ -416,18 +418,42 @@ app.post("/login", (req, res) => {
     });
 });
 
+app.post("/changPassword/:UserID", (req, res) => {
+  User.findOne({
+    where: {
+      UserID: req.params.UserID
+    },
+  })
+    .then((user) => {
+    user.update({
+      UserPassword:req.body.newpassword
+    }).then(()=>{
+      res.status(200).send(true)
+    })
+    })
+    .catch((err) => {
+      res.status(500).send(err);
+    });
+});
+
 app.post("/forget", (req, res) => {
   User.findOne({
     where: {
-      UserName: req.body.username,
+      UserName: req.body.UserName,
       Email: req.body.Email,
     },
   })
     .then((user) => {
       if (user) {
-        res.status(200).send(true);
+        res.status(200).send({
+          status:true,
+          UserID:user.UserID
+        });
       } else {
-        res.status(200).send(false);
+        res.status(200).send({
+          status:false,
+          UserID:0
+        });
       }
       console.log(user);
       // res.status(200).send("HI")
