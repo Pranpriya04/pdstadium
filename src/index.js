@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(cors());
 //--------------------------------------CREATE DB--------------------------------------------
 
-const db_url = "postgres://webadmin:SCMdrc22526@node60035-bookstadium.proen.app.ruk-com.cloud/bookstadium"
+const db_url = "postgres://webadmin:ONLobm41837@node59653-env-8965744.proen.app.ruk-com.cloud"
 const sequelize = new Sequelize(db_url);
 // const sequelize = new Sequelize("database", "username", "password", {
 //   host: "localhost",
