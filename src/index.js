@@ -7,7 +7,8 @@ app.use(express.json());
 app.use(cors());
 //--------------------------------------CREATE DB--------------------------------------------
 
-const db_url = "postgres://webadmin:FAQnco56985@node60133-pj2547.proen.app.ruk-com.cloud"
+const db_url =
+  "postgres://webadmin:FAQnco56985@node60133-pj2547.proen.app.ruk-com.cloud:11652/bookstadium";
 const sequelize = new Sequelize(db_url);
 // const sequelize = new Sequelize("database", "username", "password", {
 //   host: "localhost",
@@ -148,7 +149,9 @@ Sales.belongsTo(Stadium, {
   foreignKey: "StadiumID",
 });
 
-sequelize.sync();
+(async () => {
+  await sequelize.sync({ alter: true });
+})();
 
 //---------------------------------type_stadiums-----------------------------------------------------
 
@@ -373,7 +376,6 @@ app.get("/Bat", (req, res) => {
     });
 });
 
-
 //---------------------------------sales_data-----------------------------------------------------
 
 app.get("/sales_datas/:SalesID", (req, res) => {
@@ -559,15 +561,17 @@ app.post("/login", (req, res) => {
 app.post("/changPassword/:UserID", (req, res) => {
   User.findOne({
     where: {
-      UserID: req.params.UserID
+      UserID: req.params.UserID,
     },
   })
     .then((user) => {
-    user.update({
-      UserPassword:req.body.newpassword
-    }).then(()=>{
-      res.status(200).send(true)
-    })
+      user
+        .update({
+          UserPassword: req.body.newpassword,
+        })
+        .then(() => {
+          res.status(200).send(true);
+        });
     })
     .catch((err) => {
       res.status(500).send(err);
@@ -584,13 +588,13 @@ app.post("/forget", (req, res) => {
     .then((user) => {
       if (user) {
         res.status(200).send({
-          status:true,
-          UserID:user.UserID
+          status: true,
+          UserID: user.UserID,
         });
       } else {
         res.status(200).send({
-          status:false,
-          UserID:0
+          status: false,
+          UserID: 0,
         });
       }
       console.log(user);
