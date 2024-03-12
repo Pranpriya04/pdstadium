@@ -6,9 +6,7 @@ var cors = require("cors");
 app.use(express.json());
 app.use(cors());
 //--------------------------------------CREATE DB--------------------------------------------
-
-const db_url =
-  "postgres://webadmin:FAQnco56985@node60133-pj2547.proen.app.ruk-com.cloud:11652/bookstadium";
+const db_url = "postgres://webadmin:FAQnco56985@10.104.15.124:5432/bookstadium";
 const sequelize = new Sequelize(db_url);
 // const sequelize = new Sequelize("database", "username", "password", {
 //   host: "localhost",
@@ -54,7 +52,7 @@ const Stadium = sequelize.define("stadiums", {
     primaryKey: true,
   },
   StadiumName: {
-    type: Sequelize.STRING(40),
+    type: Sequelize.STRING,
     allowNull: false,
   },
   TypeID: {
@@ -66,7 +64,7 @@ const Stadium = sequelize.define("stadiums", {
     allowNull: false,
   },
   Size: {
-    type: Sequelize.INTEGER,
+    type: Sequelize.STRING,
     allowNull: false,
   },
 });
@@ -79,7 +77,7 @@ const Type = sequelize.define("type_stadiums", {
     primaryKey: true,
   },
   TypeName: {
-    type: Sequelize.STRING(40),
+    type: Sequelize.STRING,
     allowNull: false,
   },
 });
@@ -92,31 +90,31 @@ const User = sequelize.define("user", {
     primaryKey: true,
   },
   UserPassword: {
-    type: Sequelize.STRING(10),
+    type: Sequelize.STRING,
     allowNull: false,
   },
   UserName: {
-    type: Sequelize.STRING(40),
+    type: Sequelize.STRING,
     allowNull: false,
   },
   Gender: {
-    type: Sequelize.STRING(1),
+    type: Sequelize.STRING,
     allowNull: false,
   },
   Email: {
-    type: Sequelize.STRING(40),
+    type: Sequelize.STRING,
     allowNull: false,
   },
   Tel: {
-    type: Sequelize.STRING(10),
+    type: Sequelize.STRING,
     allowNull: false,
   },
   Credit: {
-    type: Sequelize.STRING(13),
+    type: Sequelize.STRING,
     allowNull: false,
   },
   Address: {
-    type: Sequelize.STRING(100),
+    type: Sequelize.STRING,
     allowNull: false,
   },
 });
@@ -518,12 +516,15 @@ app.get("/users/:UserID", (req, res) => {
 });
 
 app.post("/users", (req, res) => {
+  let data = req.body;
+  delete data.nPassword;
+  console.log(data);
   User.create(req.body)
     .then((user) => {
       res.status(200).json(user);
     })
     .catch((err) => {
-      res.status(500).send(err);
+      res.status(200).json(err);
     });
 });
 
